@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 음성 메모: 사용자가 버튼을 눌렀을 때만 녹음 (런타임 권한) -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!--
+        Pleos Vehicle SDK 읽기 전용 권한 (사용하는 도메인만 선언)
+        - CarInfo  : pleos.car.permission.CAR_INFO
+        - Odometer : pleos.car.permission.CAR_DRIVE
+        제어(CONTROL_*) / PRIVATE_* 권한은 사용하지 않는다.
+        https://document.pleos.ai/docs/pleos-only/connect-sdk-pleos/Vehicle/vehicle-permission
+    -->
+    <uses-permission android:name="pleos.car.permission.CAR_INFO" />
+    <uses-permission android:name="pleos.car.permission.CAR_DRIVE" />
+
+    <!-- 개발 중에는 일반 기기에서도 Mock 모드로 실행할 수 있도록 required=false -->
+    <uses-feature android:name="android.hardware.type.automotive" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+
+    <application
+        android:name=".DongbanApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Dongbantest">
+
+        <!-- CarUxRestrictions (AAOS). 비 Automotive 기기에서는 없어도 실행된다. -->
+        <uses-library android:name="android.car" android:required="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Dongbantest"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="uiMode|density|screenSize|smallestScreenSize|screenLayout|orientation">
+            <!--
+                주행 중에도 실행 가능하도록 선언. 대신 앱이 CarUxRestrictions 를 감지해
+                키보드 입력·사진 감상 등 주의 분산 기능을 스스로 제한한다.
+            -->
+            <meta-data android:name="distractionOptimized" android:value="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
